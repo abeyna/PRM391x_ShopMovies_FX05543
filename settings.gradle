@@ -1,0 +1,2 @@
+rootProject.name = "PRM391x_ShopMovies_FX05543"
+include ':app'
