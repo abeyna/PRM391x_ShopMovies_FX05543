@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    tools:context=".Activities.LoginActivity">
+
 
     <com.facebook.login.widget.LoginButton
-        android:id="@+id/activity_login_fb_login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:id="@+id/fb_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/fb_btn_marginTop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/activity_login_gg_login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:id="@+id/g_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fb_login_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/gg_btn_marginTop"
+        android:layout_marginBottom="@dimen/gg_btn_marginBottom" />
 
-</LinearLayout>
+</RelativeLayout>
