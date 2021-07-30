@@ -14,6 +14,15 @@ public class MovieModel implements Parcelable {
     private float vote_average;
     private String movie_overview;
 
+    /**
+     * Constructor
+     * @param title
+     * @param poster_path
+     * @param release_date
+     * @param movie_id
+     * @param vote_average
+     * @param movie_overview
+     */
     public MovieModel(String title, String poster_path, String release_date, int movie_id, float vote_average, String movie_overview) {
         this.title = title;
         this.poster_path = poster_path;
@@ -73,6 +82,11 @@ public class MovieModel implements Parcelable {
         return 0;
     }
 
+    /**
+     * Show Movie's details when user click the item.
+     * @param dest
+     * @param flags
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
