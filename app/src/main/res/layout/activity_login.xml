@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <com.facebook.login.widget.ProfilePictureView
-        android:id="@+id/activity_login_fb_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+<!--    <com.facebook.login.widget.ProfilePictureView-->
+<!--        android:id="@+id/activity_login_fb_image"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"/>-->
 
     <com.facebook.login.widget.LoginButton
-        android:id="@+id/activity_login_fb_login_btn"
+        android:id="@+id/activity_login_fb_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -22,8 +22,8 @@
         android:layout_marginBottom="30dp" />
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/activity_login_gg_login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:id="@+id/activity_login_gg_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
