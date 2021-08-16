@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 getFBInformation();
-                Intent intent = new Intent(LoginActivity.this, MoviesActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MoviesShopActivity.class);
                 startActivity(intent);
             }
 
@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             // Signed in successfully, show authenticated UI.
-            Intent intent = new Intent(LoginActivity.this, MoviesActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MoviesShopActivity.class);
             startActivity(intent);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
