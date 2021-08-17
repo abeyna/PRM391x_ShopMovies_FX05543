@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="funix.assignment.prm391x_shopmovies_fx05543.MoviesShopActivity">>
+    tools:context="funix.assignment.prm391x_shopmovies_fx05543.MoviesShopActivity">
 
     <FrameLayout
         android:id="@+id/activity_movies_frame_container"
