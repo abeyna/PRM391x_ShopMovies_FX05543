@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_moviesshop_rcv_movies"
+        android:id="@+id/fragment_movies_rcv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>
