@@ -1,5 +1,7 @@
 package funix.assignment.prm391x_shopmovies_fx05543;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,12 +31,11 @@ public class ProfileFragment extends Fragment {
         mTvFirstName = (TextView) view.findViewById(R.id.fragment_profile_tv_first_name);
         mTvLastName = (TextView) view.findViewById(R.id.fragment_profile_tv_last_name);
 
-        Bundle getUserData = getArguments();
-        if(getUserData != null) {
-            mTvFirstName.setText(getUserData.getString("first-name"));
-            mTvLastName.setText(getUserData.getString("last-name"));
-            mTvEmail.setText(getUserData.getString("e-mail"));
-        }
+        Context context = getContext().getApplicationContext();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
+        mTvFirstName.setText(sharedPreferences.getString("first-name","(unknown)"));
+        mTvLastName.setText(sharedPreferences.getString("last-name","(unknown)"));
+        mTvEmail.setText(sharedPreferences.getString("email","(unknown)"));
 
         return view;
     }

@@ -1,6 +1,8 @@
 package funix.assignment.prm391x_shopmovies_fx05543;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -70,14 +72,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 getFBInformation();
-
-                ProfileFragment profileFragment = new ProfileFragment();
-                Bundle putUserData = new Bundle();
-                putUserData.putString("firs-name", mFirstName);
-                putUserData.putString("last-name", mLastName);
-                putUserData.putString("e-mail", mEmail);
-                profileFragment.setArguments(putUserData);
-
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -104,6 +98,15 @@ public class LoginActivity extends AppCompatActivity {
                     mFirstName = object.getString("first_name");
                     mLastName = object.getString("last_name");
                     mEmail = object.getString("email");
+
+                    Context context = getApplicationContext();
+                    SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("first-name", mFirstName);
+                    editor.putString("last-name", mLastName);
+                    editor.putString("email", mEmail);
+                    editor.apply();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
