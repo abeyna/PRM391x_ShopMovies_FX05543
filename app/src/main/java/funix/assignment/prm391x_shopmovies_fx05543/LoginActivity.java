@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                     mFirstName = object.getString("first_name");
                     mLastName = object.getString("last_name");
                     mEmail = object.getString("email");
-//                    mBirthday = object.getString("birthday");
+                    mBirthday = object.getString("birthday");
 
                     Context context = getApplicationContext();
                     SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);

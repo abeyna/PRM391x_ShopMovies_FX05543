@@ -40,7 +40,7 @@ public class ProfileFragment extends Fragment {
         mTvFirstName.setText(sharedPreferences.getString("first-name","(unknown)"));
         mTvLastName.setText(sharedPreferences.getString("last-name","(unknown)"));
         mTvEmail.setText(sharedPreferences.getString("email","(unknown)"));
-        mTvBirthday.setText(sharedPreferences.getString("birthday", "(unknown)"));
+        mTvBirthday.setText(sharedPreferences.getString("birthday","(unknown)"));
 
         return view;
     }
