@@ -13,12 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.facebook.Profile;
 import com.facebook.login.widget.ProfilePictureView;
 
 public class ProfileFragment extends Fragment {
     private ProfilePictureView mProfilePictureView;
     private Button mBtnLogout;
-    private TextView mTvFirstName, mTvLastName, mTvEmail;
+    private TextView mTvFirstName, mTvLastName, mTvEmail, mTvBirthday;
 
     @Nullable
     @Override
@@ -30,12 +31,16 @@ public class ProfileFragment extends Fragment {
         mTvEmail = (TextView) view.findViewById(R.id.fragment_profile_tv_email);
         mTvFirstName = (TextView) view.findViewById(R.id.fragment_profile_tv_first_name);
         mTvLastName = (TextView) view.findViewById(R.id.fragment_profile_tv_last_name);
+        mTvBirthday = (TextView) view.findViewById(R.id.fragment_profile_tv_birthday);
+
+        mProfilePictureView.setProfileId(Profile.getCurrentProfile().getId());
 
         Context context = getContext().getApplicationContext();
         SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
         mTvFirstName.setText(sharedPreferences.getString("first-name","(unknown)"));
         mTvLastName.setText(sharedPreferences.getString("last-name","(unknown)"));
         mTvEmail.setText(sharedPreferences.getString("email","(unknown)"));
+        mTvBirthday.setText(sharedPreferences.getString("birthday", "(unknown)"));
 
         return view;
     }

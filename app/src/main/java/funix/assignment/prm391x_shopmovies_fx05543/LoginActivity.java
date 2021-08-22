@@ -35,10 +35,8 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
-//    private ProfilePictureView profilePictureView;
-//    private TextView tvFirstName, tvLastName, tvEmail;
 
-    private String mFirstName, mLastName, mEmail;
+    private String mFirstName, mLastName, mEmail, mBirthday;
 
     private LoginButton mFbBtn;
     private SignInButton mGgBtn;
@@ -56,12 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         mFbBtn = findViewById(R.id.activity_login_fb_btn);
         mGgBtn = findViewById(R.id.activity_login_gg_btn);
 
-//        profilePictureView = findViewById(R.id.fragment_profile_picture);
-//        tvFirstName = findViewById(R.id.fragment_profile_tv_first_name);
-//        tvLastName = findViewById(R.id.fragment_profile_tv_last_name);
-//        tvEmail = findViewById(R.id.fragment_profile_tv_email);
-
-        mFbBtn.setReadPermissions(Arrays.asList("public_profile", "email"));
+        mFbBtn.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday"));
 
         loginFacebook();
         loginGoogle();
@@ -94,10 +87,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onCompleted(JSONObject object, GraphResponse response) {
                 Log.d("info_JSON", response.getJSONObject().toString());
                 try {
-//                    profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
                     mFirstName = object.getString("first_name");
                     mLastName = object.getString("last_name");
                     mEmail = object.getString("email");
+//                    mBirthday = object.getString("birthday");
 
                     Context context = getApplicationContext();
                     SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
@@ -105,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("first-name", mFirstName);
                     editor.putString("last-name", mLastName);
                     editor.putString("email", mEmail);
+                    editor.putString("birthday", mBirthday);
                     editor.apply();
 
                 } catch (JSONException e) {
@@ -113,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         Bundle parameter = new Bundle();
-        parameter.putString("fields", "first_name,last_name,email");
+        parameter.putString("fields", "first_name,last_name,email,birthday");
         graphRequest.setParameters(parameter);
         graphRequest.executeAsync();
     }
