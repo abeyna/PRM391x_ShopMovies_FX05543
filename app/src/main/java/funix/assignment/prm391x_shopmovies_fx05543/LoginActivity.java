@@ -16,6 +16,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -26,11 +27,17 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
+//    private ProfilePictureView profilePictureView;
+//    private TextView tvFirstName, tvLastName, tvEmail;
+
+    private String mFirstName, mLastName, mEmail;
+
     private LoginButton mFbBtn;
     private SignInButton mGgBtn;
     private CallbackManager mCallbackManager;
@@ -47,6 +54,11 @@ public class LoginActivity extends AppCompatActivity {
         mFbBtn = findViewById(R.id.activity_login_fb_btn);
         mGgBtn = findViewById(R.id.activity_login_gg_btn);
 
+//        profilePictureView = findViewById(R.id.fragment_profile_picture);
+//        tvFirstName = findViewById(R.id.fragment_profile_tv_first_name);
+//        tvLastName = findViewById(R.id.fragment_profile_tv_last_name);
+//        tvEmail = findViewById(R.id.fragment_profile_tv_email);
+
         mFbBtn.setReadPermissions(Arrays.asList("public_profile", "email"));
 
         loginFacebook();
@@ -58,6 +70,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 getFBInformation();
+
+                ProfileFragment profileFragment = new ProfileFragment();
+                Bundle putUserData = new Bundle();
+                putUserData.putString("firs-name", mFirstName);
+                putUserData.putString("last-name", mLastName);
+                putUserData.putString("e-mail", mEmail);
+                profileFragment.setArguments(putUserData);
+
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -79,10 +99,18 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 Log.d("info_JSON", response.getJSONObject().toString());
+                try {
+//                    profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
+                    mFirstName = object.getString("first_name");
+                    mLastName = object.getString("last_name");
+                    mEmail = object.getString("email");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         Bundle parameter = new Bundle();
-        parameter.putString("fields", "name,email,first_name");
+        parameter.putString("fields", "first_name,last_name,email");
         graphRequest.setParameters(parameter);
         graphRequest.executeAsync();
     }
@@ -151,5 +179,11 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        LoginManager.getInstance().logOut();
+        super.onStart();
     }
 }

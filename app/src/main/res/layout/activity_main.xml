@@ -10,7 +10,8 @@
         android:id="@+id/activity_main_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/activity_main_bottom_nav"/>
+        android:layout_above="@id/activity_main_bottom_nav"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/activity_main_bottom_nav"
