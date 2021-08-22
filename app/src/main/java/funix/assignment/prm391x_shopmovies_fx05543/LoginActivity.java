@@ -18,7 +18,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,7 +35,7 @@ import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private String mFirstName, mLastName, mEmail, mBirthday;
+    private String mUserId, mFirstName, mLastName, mEmail, mBirthday;
 
     private LoginButton mFbBtn;
     private SignInButton mGgBtn;
@@ -87,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onCompleted(JSONObject object, GraphResponse response) {
                 Log.d("info_JSON", response.getJSONObject().toString());
                 try {
+                    mUserId = object.getString("id");
                     mFirstName = object.getString("first_name");
                     mLastName = object.getString("last_name");
                     mEmail = object.getString("email");
@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     Context context = getApplicationContext();
                     SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("user-id", mUserId);
                     editor.putString("first-name", mFirstName);
                     editor.putString("last-name", mLastName);
                     editor.putString("email", mEmail);
@@ -107,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         Bundle parameter = new Bundle();
-        parameter.putString("fields", "first_name,last_name,email,birthday");
+        parameter.putString("fields", "id,first_name,last_name,email,birthday");
         graphRequest.setParameters(parameter);
         graphRequest.executeAsync();
     }
@@ -176,11 +177,5 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        LoginManager.getInstance().logOut();
-        super.onStart();
     }
 }
