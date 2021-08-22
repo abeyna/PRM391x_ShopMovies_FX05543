@@ -34,13 +34,19 @@ public class ProfileFragment extends Fragment {
         mTvBirthday = (TextView) view.findViewById(R.id.fragment_profile_tv_birthday);
 
         mProfilePictureView.setProfileId(Profile.getCurrentProfile().getId());
-
         Context context = getContext().getApplicationContext();
         SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
         mTvFirstName.setText(sharedPreferences.getString("first-name","(unknown)"));
         mTvLastName.setText(sharedPreferences.getString("last-name","(unknown)"));
         mTvEmail.setText(sharedPreferences.getString("email","(unknown)"));
         mTvBirthday.setText(sharedPreferences.getString("birthday","(unknown)"));
+
+        mBtnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         return view;
     }
