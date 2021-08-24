@@ -117,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
         // Configure sign-in to request the user's ID, email address, and basic profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestProfile()
                 .build();
 
         // Build a GoogleSignInClient with the options specified by gso.
@@ -141,18 +142,35 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    /**
+     * Lấy dữ liệu người dùng từ Google sau khi đăng nhập thành công.
+     * Lưu dữ thông tin Profile vào SharedPreference để truy xuất được ở Fragment Profile.
+     * Dữ liệu gồm: id, họ, tên, email.
+     * @param completedTask
+     */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
             if (acct != null) {
-                String personName = acct.getDisplayName();
-                String personGivenName = acct.getGivenName();
-                String personFamilyName = acct.getFamilyName();
-                String personEmail = acct.getEmail();
-                String personId = acct.getId();
+                // Lấy thông tin profile từ Google
+                mFirstName = acct.getGivenName();
+                mLastName = acct.getFamilyName();
+                mEmail = acct.getEmail();
+                mUserId = acct.getId();
                 Uri personPhoto = acct.getPhotoUrl();
+
+                // Lưu thông tin profile vào SharedPreferences
+                Context context = getApplicationContext();
+                SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("user-id", mUserId);
+                editor.putString("first-name", mFirstName);
+                editor.putString("last-name", mLastName);
+                editor.putString("email", mEmail);
+                editor.putString("birthday", mBirthday);
+                editor.apply();
             }
 
             // Signed in successfully, show authenticated UI.
