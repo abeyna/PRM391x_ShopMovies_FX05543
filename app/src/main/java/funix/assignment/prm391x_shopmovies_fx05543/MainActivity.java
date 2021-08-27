@@ -1,72 +1,167 @@
 package funix.assignment.prm391x_shopmovies_fx05543;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.Fragment;
 
+import com.android.volley.RequestQueue;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private BottomNavigationView mNavigationView;
-    private ViewPager mViewPager;
+    private static MainActivity mInstance;
+    private BottomNavigationView bottomNav;
+    private RequestQueue mRequestQueue;
+
+    public static synchronized MainActivity getInstance() {
+        return mInstance;
+    }
+
+    /**
+     * Handles Navigation options selected event
+     */
+    private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+                    switch (item.getItemId()) {
+                        // Showing movies fragment
+                        case R.id.menu_movies:
+                            selectedFragment = new MoviesFragment();
+                            break;
+
+                        // Showing profile fragment
+                        case R.id.menu_profile:
+                            Intent intent = getIntent();
+                            Bundle b = intent.getExtras();
+
+                            selectedFragment = new ProfileFragment();
+                            selectedFragment.setArguments(b);
+                            break;
+                        case R.id.menu_logout:
+                            logoutGoogle();
+                            logoutFacebook();
+                            break;
+                    }
+
+                    // Change to selected fragment
+                    if (selectedFragment != null) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment, selectedFragment)
+                                .commit();
+                    }
+
+                    return true;
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mInstance = this;
 
-        mNavigationView = findViewById(R.id.activity_main_bottom_nav);
-        mViewPager = findViewById(R.id.activity_main_view_pager);
+        bottomNav = findViewById(R.id.activity_main_bottom_nav);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        setUpViewPager();
+        // Movie fragment loaded by default
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment,
+                        new MoviesFragment())
+                .commit();
 
-        mNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_movies:
-                        mViewPager.setCurrentItem(0);
-                        break;
-                    case R.id.menu_profile:
-                        mViewPager.setCurrentItem(1);
-                        break;
-                }
-                return true;
-            }
-        });
     }
 
-    private void setUpViewPager() {
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mViewPager.setAdapter(viewPagerAdapter);
+    /**
+     * Handles logout button on Appbar
+     *
+     * @param item logout button
+     * @return true if button clicked, otherwise false
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        switch (item.getItemId()) {
+            case R.id.singOut:
+                logoutGoogle();
+                logoutFacebook();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Facebook log out event
+     */
+    private void logoutFacebook() {
+
+        // Check if user have logged in or not
+        if (AccessToken.getCurrentAccessToken() == null) {
+            return; // already logged out
+        }
+
+        new GraphRequest(AccessToken.getCurrentAccessToken(),
+                "/me/permissions/",
+                null,
+                HttpMethod.DELETE, new GraphRequest
+                .Callback() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onCompleted(GraphResponse graphResponse) {
+
+                LoginManager.getInstance().logOut();
 
             }
+        }).executeAsync();
+    }
 
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        mNavigationView.getMenu().findItem(R.id.menu_movies).setChecked(true);
-                        break;
-                    case 1:
-                        mNavigationView.getMenu().findItem(R.id.menu_profile).setChecked(true);
-                        break;
-                }
-            }
+    /**
+     * Google log out event
+     */
+    private void logoutGoogle() {
+        GoogleSignInOptions gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+        // Check if google have logged or not
+        if (GoogleSignIn.getClient(this, gso) != null) {
 
-            }
-        });
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+            mGoogleSignInClient.signOut()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            moveToLoginActivity();
+                        }
+                    });
+        }
+    }
+
+
+    /**
+     * After logged out, moves back to log in activity
+     */
+    private void moveToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

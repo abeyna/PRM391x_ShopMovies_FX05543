@@ -1,62 +1,102 @@
 package funix.assignment.prm391x_shopmovies_fx05543;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.facebook.AccessToken;
-import com.facebook.login.LoginManager;
-import com.facebook.login.widget.ProfilePictureView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.squareup.picasso.Picasso;
+
 
 public class ProfileFragment extends Fragment {
-    private ProfilePictureView mProfilePictureView;
-    private Button mBtnLogout;
-    private TextView mTvFirstName, mTvLastName, mTvEmail, mTvBirthday;
-    private String mUserId;
+    private View mRootView;
+    private ImageView mProfileImg;
+    private TextView mUserNameTxt;
+    private TextView mEmailTxt;
+    private TextView mIdTxt;
 
-    @Nullable
+    public ProfileFragment() {
+        // Required empty public constructor
+    }
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_top_navigation, menu);
+    }
 
-        mProfilePictureView = (ProfilePictureView) view.findViewById(R.id.fragment_profile_picture);
-        mBtnLogout = (Button) view.findViewById(R.id.fragment_profile_btn_logout);
-        mTvEmail = (TextView) view.findViewById(R.id.fragment_profile_tv_email);
-        mTvFirstName = (TextView) view.findViewById(R.id.fragment_profile_tv_first_name);
-        mTvLastName = (TextView) view.findViewById(R.id.fragment_profile_tv_last_name);
-        mTvBirthday = (TextView) view.findViewById(R.id.fragment_profile_tv_birthday);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
 
-        Context context = getContext().getApplicationContext();
-        SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.singOut:
+                Toast.makeText(getContext(), "Sign Out clicked", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        mUserId = sharedPreferences.getString("user-id","");
-        mProfilePictureView.setProfileId(mUserId);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
-        mTvFirstName.setText(sharedPreferences.getString("first-name","(unknown)"));
-        mTvLastName.setText(sharedPreferences.getString("last-name","(unknown)"));
-        mTvEmail.setText(sharedPreferences.getString("email","(unknown)"));
-        mTvBirthday.setText(sharedPreferences.getString("birthday","(unknown)"));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        getActivity().setTitle(R.string.profile_text);
+        mRootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        mProfileImg = mRootView.findViewById(R.id.profile_image);
+        mUserNameTxt = mRootView.findViewById(R.id.profile_name_txt);
+        mEmailTxt = mRootView.findViewById(R.id.profile_email_txt);
+        mIdTxt = mRootView.findViewById(R.id.profile_id_txt);
 
-        mBtnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LoginManager.getInstance().logOut();
-                AccessToken.setCurrentAccessToken(null);
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Retrieves Google profile data
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (acct != null) {
+            String personName = acct.getDisplayName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
 
-        return view;
+            Picasso.get().load(personPhoto).into(mProfileImg);
+            mUserNameTxt.setText(personName);
+            mEmailTxt.setText("Email: " + personEmail);
+            mIdTxt.setText("User Id: " + personId);
+
+            Log.d("GOOGLE", "onCreateView: email: " + personEmail);
+        } else {
+            Context context = getContext().getApplicationContext();
+            SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
+
+            String personId = sharedPreferences.getString("id","");
+            String personName = sharedPreferences.getString("name","");
+            String personEmail = sharedPreferences.getString("email","");
+
+            mIdTxt.setText("User ID: " + personId);
+            Picasso.get().load("https://graph.facebook.com/" + personId + "/picture?width=400&height=400").into(mProfileImg);
+            mUserNameTxt.setText(personName);
+            mEmailTxt.setText("Email: " + personEmail);
+        }
+        return mRootView;
     }
 }

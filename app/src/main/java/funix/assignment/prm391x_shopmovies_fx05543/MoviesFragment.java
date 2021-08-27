@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 
 public class MoviesFragment extends Fragment {
     private static final String URL = "https://dinhnguyenngoc.github.io/happycoding/json/movies_2017.json";
+    private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private ArrayList<Movie> mMoviesList;
 
@@ -40,12 +42,21 @@ public class MoviesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-       
+        inflater.inflate(R.menu.menu_top_navigation, menu);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.singOut:
+                Toast.makeText(getContext(), "Sign Out clicked", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -63,7 +74,7 @@ public class MoviesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
-        RecyclerView mRecyclerView = rootView.findViewById(R.id.fragment_movies_rcv);
+        mRecyclerView = rootView.findViewById(R.id.fragment_movies_rcv);
         mMoviesList = new ArrayList<>();
         fetchMoviesItem();
 

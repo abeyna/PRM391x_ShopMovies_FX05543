@@ -6,12 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/activity_main_view_pager"
+    <FrameLayout
+        android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/activity_main_bottom_nav"
-        tools:ignore="SpeakableTextPresentCheck" />
+        android:layout_marginBottom="?android:attr/actionBarSize"
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toTopOf="@+id/activity_main_bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/activity_main_bottom_nav"

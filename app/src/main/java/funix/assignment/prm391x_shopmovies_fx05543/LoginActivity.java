@@ -3,7 +3,6 @@ package funix.assignment.prm391x_shopmovies_fx05543;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +34,7 @@ import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private String mUserId, mFirstName, mLastName, mEmail, mBirthday;
+    private String mUserId, mUserName, mImageURL, mEmail, mBirthday;
 
     private LoginButton mFbBtn;
     private SignInButton mGgBtn;
@@ -87,19 +86,15 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("info_JSON", response.getJSONObject().toString());
                 try {
                     mUserId = object.getString("id");
-                    mFirstName = object.getString("first_name");
-                    mLastName = object.getString("last_name");
+                    mUserName = object.getString("name");
                     mEmail = object.getString("email");
-                    mBirthday = object.getString("birthday");
 
                     Context context = getApplicationContext();
                     SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("user-id", mUserId);
-                    editor.putString("first-name", mFirstName);
-                    editor.putString("last-name", mLastName);
+                    editor.putString("id", mUserId);
+                    editor.putString("name", mUserName);
                     editor.putString("email", mEmail);
-                    editor.putString("birthday", mBirthday);
                     editor.apply();
 
                 } catch (JSONException e) {
@@ -108,36 +103,36 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         Bundle parameter = new Bundle();
-        parameter.putString("fields", "id,first_name,last_name,email,birthday");
+        parameter.putString("fields", "id,name,email");
         graphRequest.setParameters(parameter);
         graphRequest.executeAsync();
     }
 
     private void loginGoogle() {
-        // Configure sign-in to request the user's ID, email address, and basic profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestProfile()
                 .build();
 
-        // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        // Check for existing Google Sign In account, if the user is already signed in the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        // Set the dimensions of the sign-in button.
-        mGgBtn.setSize(SignInButton.SIZE_STANDARD);
+        // Check for existing Google Sign In account, if the user is already signed in
+        // the GoogleSignInAccount will be non-null.
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         mGgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                signIn();
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.activity_login_gg_btn:
+                        googleSignIn();
+                        break;
+                }
             }
         });
     }
 
-    private void signIn() {
+    private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -153,25 +148,6 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-            if (acct != null) {
-                // Lấy thông tin profile từ Google
-                mFirstName = acct.getGivenName();
-                mLastName = acct.getFamilyName();
-                mEmail = acct.getEmail();
-                mUserId = acct.getId();
-                Uri personPhoto = acct.getPhotoUrl();
-
-                // Lưu thông tin profile vào SharedPreferences
-                Context context = getApplicationContext();
-                SharedPreferences sharedPreferences = context.getSharedPreferences("user-data", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("user-id", mUserId);
-                editor.putString("first-name", mFirstName);
-                editor.putString("last-name", mLastName);
-                editor.putString("email", mEmail);
-                editor.putString("birthday", mBirthday);
-                editor.apply();
-            }
 
             // Signed in successfully, show authenticated UI.
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
