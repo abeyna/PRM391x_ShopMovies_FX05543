@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_movies"
-        android:title="@string/tab_1"
+        android:title="@string/movies_text"
         android:icon="@drawable/baseline_movie_24"/>
     <item
         android:id="@+id/menu_profile"
-        android:title="@string/tab_2"
+        android:title="@string/profile_text"
         android:icon="@drawable/baseline_account_circle_24"/>
     <item
         android:id="@+id/menu_logout"
