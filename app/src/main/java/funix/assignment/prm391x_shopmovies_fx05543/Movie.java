@@ -2,9 +2,17 @@ package funix.assignment.prm391x_shopmovies_fx05543;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Movie object
+ */
 public class Movie {
+    /** URL to movie's poster.*/
     private String mImageLink;
+
+    /** Movie's name.*/
     private String mMoviesName;
+
+    /** Movie's price.*/
     private String mMoviePrice;
 
     public Movie() {

@@ -32,14 +32,26 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+/**
+ *  Login Activity.
+ */
 public class LoginActivity extends AppCompatActivity {
 
-    private String mUserId, mUserName, mImageURL, mEmail, mBirthday;
+    /** Store user data after log-in success.*/
+    private String mUserId, mUserName, mEmail;
 
+    /** Facebook login button.*/
     private LoginButton mFbBtn;
+
+    /** Google login button.*/
     private SignInButton mGgBtn;
+
+    /** Callback for log-in.*/
     private CallbackManager mCallbackManager;
+
+    /** Google sign-in client.*/
     private GoogleSignInClient mGoogleSignInClient;
+
     private static int RC_SIGN_IN = 100;
 
     @Override
@@ -58,6 +70,9 @@ public class LoginActivity extends AppCompatActivity {
         loginGoogle();
     }
 
+    /**
+     * Method for login Facebook.
+     */
     private void loginFacebook() {
         mFbBtn.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -79,6 +94,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Get user data from Facebook account.
+     * Store all data on Fragment Profile via SharedPreferences.
+     * Includes: ID, name, email.
+     */
     private void getFBInformation() {
         GraphRequest graphRequest = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -108,6 +128,9 @@ public class LoginActivity extends AppCompatActivity {
         graphRequest.executeAsync();
     }
 
+    /**
+     * Method for login Google.
+     */
     private void loginGoogle() {
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -115,10 +138,6 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
         mGgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,15 +151,16 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Called when click button google sign-in.
+     */
     private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     /**
-     * Lấy dữ liệu người dùng từ Google sau khi đăng nhập thành công.
-     * Lưu dữ thông tin Profile vào SharedPreference để truy xuất được ở Fragment Profile.
-     * Dữ liệu gồm: id, họ, tên, email.
+     * Check if user has signed in before.
      * @param completedTask
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {

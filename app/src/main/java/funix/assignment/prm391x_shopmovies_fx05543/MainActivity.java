@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.RequestQueue;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -22,14 +21,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ *  Main Activity store 2 fragment Movies and Profile.
+ */
 public class MainActivity extends AppCompatActivity {
     private static MainActivity mInstance;
     private BottomNavigationView bottomNav;
-    private RequestQueue mRequestQueue;
-
-    public static synchronized MainActivity getInstance() {
-        return mInstance;
-    }
 
     /**
      * Handles Navigation options selected event
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
 
-                    // Change to selected fragment
+                    // Change to selected fragment between Movies and Profile, and log-out to Login Activity if user choose LogOut.
                     if (selectedFragment != null) {
                         getSupportFragmentManager()
                                 .beginTransaction()
@@ -87,25 +84,6 @@ public class MainActivity extends AppCompatActivity {
                         new MoviesFragment())
                 .commit();
 
-    }
-
-    /**
-     * Handles logout button on Appbar
-     *
-     * @param item logout button
-     * @return true if button clicked, otherwise false
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.singOut:
-                logoutGoogle();
-                logoutFacebook();
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**

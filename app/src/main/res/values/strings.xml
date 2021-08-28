@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">PRM391x_ShopMovies_FX05543</string>
     <string name="facebook_app_id">512679799888480</string>
-    <string name="tab_1">Movies</string>
-    <string name="tab_2">Profile</string>
     <string name="movies_text">Movies</string>
     <string name="profile_text">Profile</string>
     <string name="signOut_text">Sign out</string>

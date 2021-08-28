@@ -3,15 +3,10 @@ package funix.assignment.prm391x_shopmovies_fx05543;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,35 +25,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ *  Movies Fragment
+ */
 public class MoviesFragment extends Fragment {
+    /** URL to json file.*/
     private static final String URL = "https://dinhnguyenngoc.github.io/happycoding/json/movies_2017.json";
+
+    /** Use recyclerView to display movies list.*/
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
+
+    /** Movies List.*/
     private ArrayList<Movie> mMoviesList;
 
     public MoviesFragment() {
         // Required empty public constructor
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_top_navigation, menu);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.singOut:
-                Toast.makeText(getContext(), "Sign Out clicked", Toast.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
